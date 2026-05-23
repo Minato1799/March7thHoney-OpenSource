@@ -67,7 +67,7 @@ Legend:
   - [x] Core match flow
   - [x] Shop buy/refresh/sell baseline
   - [x] Orb use baseline
-  - [ ] Full parity for all edge rules
+  - [ ] Full parity for all edge rules (insufficient-gold buy + HP-delta underflow fixed; see docs/RoadmapProgress.md)
 
 - [ ] Event Modules
   - [ ] Activity umbrella full coverage
@@ -75,7 +75,7 @@ Legend:
   - [ ] Embers Collection
   - [ ] Permanent Chronicle
   - [ ] Fate
-  - [ ] March 7th Sword Training
+  - [x] March 7th Sword Training (event panel, session lifecycle, skills/endings progression)
   - [ ] Party Car
   - [ ] Cat Cake Catch
   - [ ] RollShop

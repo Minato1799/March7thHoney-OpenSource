@@ -353,8 +353,8 @@ public class BattleManager(PlayerInstance player) : BasePlayerManager(player)
                 if (battle.StaminaCost > 0) await Player.SpendStamina(battle.StaminaCost);
                 break;
             case BattleEndStatus.BattleEndLose:
-                
-                minimumHp = 2000;
+
+                minimumHp = ConfigManager.Config.ServerOption.ValidBattleReviveHp();
                 teleportToAnchor = true;
                 break;
             default:
@@ -372,8 +372,13 @@ public class BattleManager(PlayerInstance player) : BasePlayerManager(player)
             {
                 BaseAvatarInfo? avatarInstance = Player.AvatarManager!.GetFormalAvatar((int)avatar.Id);
                 var prop = avatar.AvatarStatus;
-                var curHp = (int)Math.Max(Math.Round(prop.LeftHp / prop.MaxHp * 10000), minimumHp);
-                var curSp = (int)prop.LeftSp * 100;
+                // Guard against malformed client stats: MaxHp == 0 would make the ratio
+                // NaN/Infinity, and casting that to int yields int.MinValue, which then
+                // wraps to a huge value through the later (uint) cast and desyncs the client.
+                var hpRatio = prop.MaxHp > 0 ? prop.LeftHp / prop.MaxHp : 0d;
+                if (double.IsNaN(hpRatio) || double.IsInfinity(hpRatio)) hpRatio = 0d;
+                var curHp = Math.Clamp((int)Math.Round(hpRatio * 10000), minimumHp, 10000);
+                var curSp = Math.Clamp((int)prop.LeftSp * 100, 0, 10000);
                 if (avatarInstance == null)
                 {
                     avatarInstance = Player.AvatarManager!.GetTrialAvatar((int)avatar.Id);

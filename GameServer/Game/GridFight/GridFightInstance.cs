@@ -8,6 +8,7 @@ using March7thHoney.GameServer.Game.Player;
 using March7thHoney.GameServer.Server.Packet.Send.GridFight;
 using March7thHoney.Proto;
 using March7thHoney.Enums.GridFight;
+using March7thHoney.Util;
 
 namespace March7thHoney.GameServer.Game.GridFight;
 
@@ -27,8 +28,8 @@ public class GridFightInstance(PlayerInstance player, uint season, uint division
     public uint UniqueId { get; } = uniqueId;
 
     
-    public uint Gold { get; set; } = 3;
-    public uint LineupHp { get; set; } = 80;
+    public uint Gold { get; set; } = ConfigManager.Config.ServerOption.CurrencyWar.StartGold;
+    public uint LineupHp { get; set; } = Math.Min(ConfigManager.Config.ServerOption.CurrencyWar.StartLineupHp, 100);
     public uint LineupMaxHp { get; } = 100;
     public uint BattleMaxHp { get; } = 10939;
     public uint Level { get; } = 1;
@@ -55,7 +56,7 @@ public class GridFightInstance(PlayerInstance player, uint season, uint division
     public Dictionary<uint, List<uint>> EquipUniqueIdsByRoleUniqueId { get; } = new();
 
     
-    public uint ShopRefreshLeft { get; set; } = 2;
+    public uint ShopRefreshLeft { get; set; } = ConfigManager.Config.ServerOption.CurrencyWar.ShopRefreshPerSection;
     public uint ShopRollCounter { get; set; }
     public List<GridFightShopGoodsInfo> ShopGoods { get; } = new();
     public List<uint> ShopRolePool { get; } = new();
@@ -656,7 +657,7 @@ public class GridFightInstance(PlayerInstance player, uint season, uint division
         var goods = ShopGoods[shopIndex];
         if (goods.RoleGoodsInfo == null || goods.IsSoldOut) return (false, 0, 0, 0);
         var price = goods.ShopGoodsPrice;
-        if (Gold < price) Gold = price; 
+        if (Gold < price) return (false, 0, 0, 0); // reject instead of granting a free buy
         Gold -= price;
         goods.IsSoldOut = true;
         var roleId = goods.RoleGoodsInfo.RoleId;
@@ -1259,7 +1260,11 @@ public class GridFightInstance(PlayerInstance player, uint season, uint division
             Reason = GridFightUpdateGlobalHpReason.BakggpnhnneGfimnccfkik,
             FGEDKOINMAG = (int)PreBattleLineupHp,
             EHMKLNEKIOE = (int)LineupHp,
-            HPOPDNGCALL = LineupHp - PreBattleLineupHp,
+            // uint subtraction underflows when HP dropped during the battle (the common
+            // case), sending a ~4-billion garbage delta to the client. Report the magnitude.
+            HPOPDNGCALL = LineupHp >= PreBattleLineupHp
+                ? LineupHp - PreBattleLineupHp
+                : PreBattleLineupHp - LineupHp,
             PDEKDHPNCEN = 1081
         });
     }

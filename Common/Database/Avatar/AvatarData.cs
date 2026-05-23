@@ -39,6 +39,10 @@ public abstract class BaseAvatarInfo
 
     public void SetCurHp(int value, bool isExtraLineup)
     {
+        // HP/SP are stored on a 0-10000 scale and later read back through a (uint) cast,
+        // so a negative or overflowed value would corrupt into a huge number. Clamp here
+        // as a backstop regardless of which settlement/sync path produced the value.
+        value = Math.Clamp(value, 0, 10000);
         if (isExtraLineup)
             ExtraLineupHp = value;
         else
@@ -47,6 +51,7 @@ public abstract class BaseAvatarInfo
 
     public void SetCurSp(int value, bool isExtraLineup)
     {
+        value = Math.Clamp(value, 0, 10000);
         if (isExtraLineup)
             ExtraLineupSp = value;
         else

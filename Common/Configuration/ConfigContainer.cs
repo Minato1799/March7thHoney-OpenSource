@@ -104,10 +104,33 @@ public class ServerOption
     public ServerTimeOption ServerTime { get; set; } = new();
     public WelcomeMailConfig WelcomeMail { get; set; } = new();
 
+    /// <summary>HP percent (0-100) avatars are revived to after losing a battle. Official default ~20%.</summary>
+    public int BattleReviveHpPercent { get; set; } = 20;
+
+    public CurrencyWarOption CurrencyWar { get; set; } = new();
+
     public int ValidFarmingDropRate()
     {
         return Math.Max(Math.Min(FarmingDropRate, 999), 1);
     }
+
+    /// <summary>Revive HP on the internal 0-10000 scale, clamped to a valid range.</summary>
+    public int ValidBattleReviveHp()
+    {
+        return Math.Clamp(BattleReviveHpPercent, 0, 100) * 100;
+    }
+}
+
+public class CurrencyWarOption
+{
+    /// <summary>Gold the player starts a Currency War run with.</summary>
+    public uint StartGold { get; set; } = 3;
+
+    /// <summary>Lineup HP the player starts a Currency War run with (max 100).</summary>
+    public uint StartLineupHp { get; set; } = 80;
+
+    /// <summary>Number of free shop refreshes available per section.</summary>
+    public uint ShopRefreshPerSection { get; set; } = 2;
 }
 
 public class WatermarkConfig
