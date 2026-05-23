@@ -7,6 +7,8 @@ namespace March7thHoney.Database.Activity;
 public class ActivityData : BaseDatabaseDataHelper
 {
     [SugarColumn(IsJson = true)] public TrialActivityData TrialActivityData { get; set; } = new();
+    [SugarColumn(IsJson = true)] public AetherDivideData AetherDivideData { get; set; } = new();
+    [SugarColumn(IsJson = true)] public HeliobusData HeliobusData { get; set; } = new();
 }
 
 public class TrialActivityData

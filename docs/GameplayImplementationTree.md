@@ -71,7 +71,8 @@ Legend:
 
 - [ ] Event Modules
   - [ ] Activity umbrella full coverage
-  - [ ] Aetherium Wars
+  - [x] Aetherium Wars (AetherDivide) — panel/lineup/spirit/passive-skill/challenge/battle handlers (see docs/AetheriumWarsHeliobus.md)
+  - [x] Heliobus — activity data, raid/battle, level upgrade, SNS feed (see docs/AetheriumWarsHeliobus.md)
   - [ ] Embers Collection
   - [ ] Permanent Chronicle
   - [ ] Fate

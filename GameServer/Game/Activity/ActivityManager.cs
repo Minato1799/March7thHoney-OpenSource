@@ -3,6 +3,8 @@ using March7thHoney.Database;
 using March7thHoney.Database.Activity;
 using March7thHoney.GameServer.Game.Activity.Activities;
 using March7thHoney.GameServer.Game.Activity.Activities.DiceCombat;
+using March7thHoney.GameServer.Game.Activity.Activities.AetherDivide;
+using March7thHoney.GameServer.Game.Activity.Activities.Heliobus;
 using March7thHoney.GameServer.Game.Player;
 using March7thHoney.Proto;
 
@@ -17,6 +19,8 @@ public class ActivityManager : BasePlayerManager
         if (Data.TrialActivityData.CurTrialStageId != 0) TrialActivityInstance = new TrialActivityInstance(this);
 
         DiceCombat = new DiceCombatActivityInstance(this);
+        AetherDivide = new AetherDivideInstance(this);
+        Heliobus = new HeliobusInstance(this);
     }
 
     #region Data
@@ -29,6 +33,8 @@ public class ActivityManager : BasePlayerManager
 
     public TrialActivityInstance? TrialActivityInstance { get; set; }
     public DiceCombatActivityInstance DiceCombat { get; set; }
+    public AetherDivideInstance AetherDivide { get; set; }
+    public HeliobusInstance Heliobus { get; set; }
 
     #endregion
 
