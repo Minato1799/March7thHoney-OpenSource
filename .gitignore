@@ -365,6 +365,10 @@ FodyWeavers.xsd
 /GameServer/OriginalProto
 Resources/
 Config/Handbook
+
+# Local config backups (e.g. Banners.json.bak) and Windows shortcuts
+*.bak
+*.lnk
 Config/Logs
 Config/Plugins
 Config.json
