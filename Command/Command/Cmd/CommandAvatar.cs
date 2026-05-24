@@ -280,6 +280,43 @@ public class CommandAvatar : ICommand
         await arg.Target.SendPacket(new PacketAvatarPathChangedNotify((uint)avatarId, (MultiPathAvatarType)pathId));
         await arg.Target.SendPacket(new PacketPlayerSyncScNotify(avatar));
 
-        
+
+    }
+
+    // /avatar claimrewards -> claim every unclaimed ascension reward on ALL characters at once
+    [CommandMethod("claimrewards")]
+    public async ValueTask ClaimRewards(CommandArg arg)
+    {
+        if (arg.Target == null)
+        {
+            await arg.SendMsg(I18NManager.Translate("Game.Command.Notice.PlayerNotFound"));
+            return;
+        }
+
+        var player = arg.Target.Player!;
+        var avatars = player.AvatarManager!.AvatarData.FormalAvatars;
+
+        // Same per-promotion logic as HandlerTakePromotionRewardCsReq, looped over every avatar/promotion.
+        var claimed = 0;
+        foreach (var avatar in avatars)
+            for (var promotion = 0; promotion < avatar.Promotion; promotion++)
+                if (!avatar.HasTakenReward(promotion))
+                {
+                    avatar.TakeReward(promotion);
+                    claimed++;
+                }
+
+        if (claimed == 0)
+        {
+            await arg.SendMsg("No unclaimed ascension rewards found.");
+            return;
+        }
+
+        // Each ascension reward grants 1 Star Rail Pass (item 101), matching the single-claim handler.
+        await player.InventoryManager!.AddItem(101, claimed, false);
+        await arg.Target.SendPacket(new PacketPlayerSyncScNotify(avatars));
+
+        await arg.SendMsg(
+            $"Claimed {claimed} ascension reward(s) on all characters (+{claimed} Star Rail Pass). Reopen the character screen to clear the red marks.");
     }
 }
