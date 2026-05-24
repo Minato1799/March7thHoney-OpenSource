@@ -27,7 +27,7 @@ public class GridFightInstance(PlayerInstance player, uint season, uint division
     public uint UniqueId { get; } = uniqueId;
 
     
-    public uint Gold { get; set; } = 3;
+    public uint Gold { get; set; } = 99999; // custom Currency War starting gold
     public uint LineupHp { get; set; } = 80;
     public uint LineupMaxHp { get; } = 100;
     public uint BattleMaxHp { get; } = 10939;
